@@ -1,0 +1,55 @@
+#!/bin/bash
+# @name: lnk
+# @version: 0.99
+# @description: create symbol link of target-file to /usr/bin/.
+# @author: rednammoc
+# @date: 15/02/11
+
+# Validate and normalize path
+function get_full_path() {
+    local path="${1}"
+    if ! [ -d "${path}" ] ; then echo "Illegal argument." >&2; return 1; fi
+    # Relative or absolute path?
+    if ! [[ "$2" = /* ]] ; then path="`pwd`/$2" ; fi
+    # Remove trailing slash/dot
+    path="${path%/.}" ; path="${path%/}"
+    echo "${path}"
+}
+
+function usage() {
+    echo "Usage: $0 <file>"
+}
+
+TARGET="$1"
+if [ -z "${TARGET}" ] ; then
+    usage
+    exit 1
+fi
+
+if ! [ -f "${TARGET}" ] ; then
+    usage
+    echo "ERROR: '${TARGET}' does not exist!"
+    exit 1
+fi
+
+TARGET_NAME=$(basename "${TARGET}")
+TARGET_DIR=$(dirname "${TARGET}")
+TARGET_PATH=$(get_full_path "${TARGET_DIR}")
+TARGET_FILE="${TARGET_PATH}/${TARGET_NAME}"
+
+if ! [ -d "${TARGET_PATH}" ] ; then
+    usage
+    echo "INTERNAL ERROR: '${TARGET_PATH}' does not exist!"
+    exit 1
+fi
+
+DESTINATION_DIR="/usr/bin"
+DESTINATION_FILE="${DESTINATION_DIR}/${TARGET_NAME}"
+
+if [ -f "${DESTINATION_FILE}" ] ; then
+   usage
+   echo "ERROR: '${DESTINATION_FILE}' already exists!"
+   exit 1
+fi
+
+ln -s "${TARGET_FILE}" "${DESTINATION_FILE}"
