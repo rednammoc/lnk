@@ -13,6 +13,6 @@ Places a symbolic link of the lnk-script into the /usr/bin/-directory.
 
     $ ./lnk lnk
 
-Places a symbolic link of ./some/script into the /usr/bin/-directory. Note that the script-path will be resolved automatically.
+Places a symbolic link of ./some/script into the /usr/bin/-directory. Note that the path's will be resolved automatically.
 
     $ lnk ./some/script
